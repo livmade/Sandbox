@@ -1,20 +1,50 @@
-version: 2
-jobs:
-  build:
-    machine:
-      image: ubuntu-1604:201903-01 # pins image to specific version
+version: 2.1
 
+jobs:
+  test:
+    working_directory: ~/repo
+    docker:
+      - image: cypress/included:3.8.3
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
     steps:
       - checkout
-
       - run:
-          name: Build container
-          command: make build-for-tests
-
+          name: update npm
+          command: npm i npm@7.5.3 -g
+      - restore_cache:
+          keys:
+            - v3-deps-{{ .Branch }}-{{ checksum "package.json" }}
+            - v3-deps-{{ .Branch }}
+            - v3-deps
       - run:
-          name: ESLint
-          command: make eslint
-
+          name: Create NPMRC
+          command: echo $NPMRC > ~/repo/.npmrc
       - run:
-          name: Run tests
-          command: make test-ci
+          name: NPM Install
+          command: npm i
+      - save_cache:
+          paths:
+            - ~/.npm
+            - ~/.cache
+          key: v3-deps-{{ .Branch }}-{{ checksum "package.json" }}
+      - run:
+          name: Display npm and node versions
+          command: echo NPM version && npm -v && echo NODE version && node -v
+      - run:
+          name: NPM Test
+          command: npm run test-ci
+      - run:
+          name: ESLint test
+          command: npm run lint
+
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - test:
+          context: ECR
+          filters:
+            branches:
+              ignore: master
