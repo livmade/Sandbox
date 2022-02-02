@@ -1,24 +1,20 @@
-version: 2.1
-
+version: 2
 jobs:
-  Olivia_Rocks: 
-    docker:
-      - image: cimg/python:3.8-node
+  build:
+    machine:
+      image: ubuntu-1604:201903-01 # pins image to specific version
 
     steps:
-      - run:
-          name: 'current directory'
-          command: pwd
-      - run:
-          name: 'home directory'
-          command: |
-            cd ~
-            pwd
+      - checkout
 
-workflows:
-  example-workflow:
-      jobs:
-        - Olivia_Rocks:
-            filters:
-             branches:
-              only: dev
+      - run:
+          name: Build container
+          command: make build-for-tests
+
+      - run:
+          name: ESLint
+          command: make eslint
+
+      - run:
+          name: Run tests
+          command: make test-ci
