@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/circleciconfig.json": "vscode-vfs://github%2B7b2276223a312c22726566223a7b2274797065223a342c226964223a22636972636c6563692d70726f6a6563742d7365747570227d7d/livmade/Sandbox/.circleci/config.yml"
+    }
+}
