@@ -48,4 +48,3 @@ workflows:
           filters:
             branches:
               ignore: master
-              beep bop boope
