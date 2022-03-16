@@ -48,4 +48,9 @@ workflows:
              ignore: /.*/
             tags:
              only: /^\d+\.\d+\.\d+$/
-
+  workflow2:
+    jobs:
+      - doathing:
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+$/
